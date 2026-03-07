@@ -1193,11 +1193,10 @@ footer{
 <!-- FLOATING CART -->
 <div class="float-cart" id="float-cart-btn" onclick="showPage('cart')" title="View Cart">
   <span class="float-cart-label">My Cart</span>
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/>
-    <path d="M2 6h20v2H2z" opacity="0.3"/>
-    <path d="M7.5 10.5C7.5 12.985 9.515 15 12 15s4.5-2.015 4.5-4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <path fill="white" d="M3 6.5L5.5 3h13L21 6.5H3z" opacity="0.15"/>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="21" r="1" fill="white" stroke="none"/>
+    <circle cx="20" cy="21" r="1" fill="white" stroke="none"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
   </svg>
   <div class="float-cart-badge" id="float-cart-count">0</div>
 </div>
@@ -1436,22 +1435,18 @@ function updateCartBadge(){
   document.getElementById('cart-count').textContent = total;
   document.getElementById('cart-count-mobile').textContent = total;
 
-  // Floating cart button
+  // Floating cart button — always visible, shows 0 when empty
   const floatBtn   = document.getElementById('float-cart-btn');
   const floatCount = document.getElementById('float-cart-count');
   if(!floatBtn) return;
   floatCount.textContent = total;
+  floatBtn.classList.add('visible');
+  // Pulse badge when items are added
   if(total > 0){
-    if(!floatBtn.classList.contains('visible')){
-      floatBtn.classList.add('visible');
-    }
-    // Pulse badge on every update
     floatBtn.classList.remove('pulse');
-    void floatBtn.offsetWidth; // reflow to restart animation
+    void floatBtn.offsetWidth;
     floatBtn.classList.add('pulse');
     setTimeout(()=>floatBtn.classList.remove('pulse'), 450);
-  } else {
-    floatBtn.classList.remove('visible');
   }
 }
 function renderCart(){
