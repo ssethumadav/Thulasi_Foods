@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thulasi Foods – Traditional Chettinad Homemade Spices</title>
+<title>Thulasi Foods – Traditional Homemade Spices</title>
 <meta name="description" content="Thulasi Foods – Premium homemade traditional spices, podis, flours and health mixes. No preservatives. Fresh. Authentic.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
@@ -445,6 +445,21 @@ section{padding:80px 24px}
 .admin-login-box p{text-align:center;color:var(--text-light);margin-bottom:28px;font-size:0.9rem}
 .admin-error{background:#fee;color:#c0392b;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:16px;display:none}
 #admin-dashboard{background:var(--cream);padding:0;min-height:100vh;display:none}
+/* ===== ADMIN DRAG REORDER ===== */
+.admin-table tbody tr{cursor:grab;transition:background 0.15s}
+.admin-table tbody tr:active{cursor:grabbing}
+.admin-table tbody tr.drag-over{background:var(--green-pale);outline:2px dashed var(--green-mid)}
+.admin-table tbody tr.dragging{opacity:0.4;background:var(--cream-dark)}
+.drag-handle{
+  cursor:grab;font-size:1.1rem;color:var(--text-light);
+  padding:4px 8px;border-radius:6px;transition:color 0.2s;
+  user-select:none;
+}
+.drag-handle:hover{color:var(--green-dark);background:var(--green-pale)}
+.reorder-hint{
+  font-size:0.75rem;color:var(--text-light);
+  display:flex;align-items:center;gap:6px;margin-bottom:12px;
+}
 .admin-tab{
   padding:9px 20px;border-radius:9px;font-size:0.85rem;font-weight:600;cursor:pointer;
   border:none;background:transparent;color:var(--text-mid);transition:all 0.2s;
@@ -573,6 +588,46 @@ footer{
 }
 .float-wa:hover .float-wa-label{opacity:1}
 
+/* ===== FLOATING CART BUTTON ===== */
+.float-cart{
+  position:fixed;bottom:96px;right:24px;z-index:900;
+  width:58px;height:58px;border-radius:50%;
+  background:var(--green-dark);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(26,58,42,0.35);
+  cursor:pointer;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  opacity:0;transform:scale(0.4) translateY(20px);
+  pointer-events:none;
+}
+.float-cart.visible{
+  opacity:1;transform:scale(1) translateY(0);
+  pointer-events:auto;
+}
+.float-cart:hover{background:var(--green-mid);transform:scale(1.1) translateY(0);box-shadow:0 6px 28px rgba(26,58,42,0.45)}
+.float-cart svg{width:26px;height:26px;fill:white;flex-shrink:0}
+.float-cart-badge{
+  position:absolute;top:-5px;right:-5px;
+  background:var(--gold);color:var(--green-dark);
+  font-size:0.62rem;font-weight:800;
+  min-width:20px;height:20px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;border:2px solid var(--white);
+  transition:transform 0.2s;
+}
+.float-cart.pulse .float-cart-badge{animation:cartBadgePop 0.4s ease;}
+@keyframes cartBadgePop{0%{transform:scale(1)}40%{transform:scale(1.6)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
+.float-cart-label{
+  position:absolute;right:68px;
+  background:var(--green-dark);color:var(--white);
+  padding:6px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;
+  white-space:nowrap;opacity:0;transition:opacity 0.2s;pointer-events:none;
+}
+.float-cart:hover .float-cart-label{opacity:1}
+@media(max-width:480px){
+  .float-cart{width:52px;height:52px;bottom:88px;right:16px}
+  .float-wa{bottom:20px;right:16px}
+}
+
 /* ===== TOAST ===== */
 .toast{
   position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
@@ -678,7 +733,7 @@ footer{
       <div class="hero-text">
         <div class="hero-badge"><span>🌿</span> 100% Natural & Authentic</div>
         <h1 class="hero-title">
-          Traditional<br><em>Chettinad Homemade</em><br>Spices & Mixes
+          Traditional<br><em>Homemade</em><br>Spices & Mixes
         </h1>
         <p class="hero-tagline">Crafted with love using age-old family recipes — bringing the real taste of South Indian kitchens to your table.</p>
         <p class="hero-tamil">தூய்மையான இல்லத்தில் தயாரிக்கப்பட்ட மரபு மசாலாக்கள்</p>
@@ -1010,6 +1065,7 @@ footer{
     <!-- Products Panel -->
     <div id="admin-panel-products">
       <div class="admin-actions">
+        <div class="reorder-hint">⠿ Drag rows to reorder — top products appear first on the homepage</div>
         <button class="admin-btn primary" onclick="openAddModal()">➕ Add New Product</button>
         <button class="admin-btn secondary" onclick="renderAdminTable()">🔄 Refresh</button>
       </div>
@@ -1017,7 +1073,7 @@ footer{
         <table class="admin-table">
           <thead>
             <tr>
-              <th>#</th><th>Name</th><th>Category</th><th>Sizes & Prices</th><th>Order</th><th></th>Actions</th>
+              <th style="width:36px"></th><th>Name</th><th>Category</th><th>Sizes & Prices</th><th>Homepage</th><th>Actions</th>
             </tr>
           </thead>
           <tbody id="admin-table-body"></tbody>
@@ -1090,7 +1146,7 @@ footer{
         <img src="LOGO_PLACEHOLDER" alt="Thulasi Foods">
         <div>
           <div class="footer-brand-name">Thulasi Foods</div>
-          <div class="footer-brand-sub">Traditional Chettinad Spices</div>
+          <div class="footer-brand-sub">Traditional Spices</div>
         </div>
       </div>
       <p class="footer-desc">Homemade traditional spices, podis, flours and health mixes — crafted with love and zero preservatives, just like your grandmother made.</p>
@@ -1126,13 +1182,25 @@ footer{
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 Thulasi Foods. All rights reserved. Made with ❤️ in Tamil Nadu.</p>
+    <p>© 2025 Thulasi Foods. All rights reserved. Made with ❤️ in Tamil Nadu.</p>
     <div class="footer-wa" onclick="openWhatsApp('Hello Thulasi Foods! I would like to place an order.')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
       Order on WhatsApp
     </div>
   </div>
 </footer>
+
+<!-- FLOATING CART -->
+<div class="float-cart" id="float-cart-btn" onclick="showPage('cart')" title="View Cart">
+  <span class="float-cart-label">My Cart</span>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/>
+    <path d="M2 6h20v2H2z" opacity="0.3"/>
+    <path d="M7.5 10.5C7.5 12.985 9.515 15 12 15s4.5-2.015 4.5-4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path fill="white" d="M3 6.5L5.5 3h13L21 6.5H3z" opacity="0.15"/>
+  </svg>
+  <div class="float-cart-badge" id="float-cart-count">0</div>
+</div>
 
 <!-- FLOATING WHATSAPP -->
 <div class="float-wa" onclick="openWhatsApp('Hello Thulasi Foods! I would like to order.')">
@@ -1364,9 +1432,27 @@ function addToCart(id){
   if(btn){btn.textContent='✓ Added';btn.classList.add('added')}
 }
 function updateCartBadge(){
-  const total=cart.reduce((s,i)=>s+i.qty,0);
-  document.getElementById('cart-count').textContent=total;
-  document.getElementById('cart-count-mobile').textContent=total;
+  const total = cart.reduce((s,i) => s + i.qty, 0);
+  document.getElementById('cart-count').textContent = total;
+  document.getElementById('cart-count-mobile').textContent = total;
+
+  // Floating cart button
+  const floatBtn   = document.getElementById('float-cart-btn');
+  const floatCount = document.getElementById('float-cart-count');
+  if(!floatBtn) return;
+  floatCount.textContent = total;
+  if(total > 0){
+    if(!floatBtn.classList.contains('visible')){
+      floatBtn.classList.add('visible');
+    }
+    // Pulse badge on every update
+    floatBtn.classList.remove('pulse');
+    void floatBtn.offsetWidth; // reflow to restart animation
+    floatBtn.classList.add('pulse');
+    setTimeout(()=>floatBtn.classList.remove('pulse'), 450);
+  } else {
+    floatBtn.classList.remove('visible');
+  }
 }
 function renderCart(){
   const el=document.getElementById('cart-items-list');
@@ -1458,29 +1544,70 @@ function adminLogout(){
   showPage('home');
 }
 function renderAdminTable(){
-  document.getElementById('stat-total').textContent=products.length;
-  const rb=document.getElementById('stat-reviews');if(rb)rb.textContent=reviews.length;
-  const tbody=document.getElementById('admin-table-body');
-  tbody.innerHTML=products.map((p,i)=>{
-    const canUp = i > 0;
-    const canDown = i < products.length - 1;
-    return `
-    <tr>
-      <td>${i+1}</td>
+  document.getElementById('stat-total').textContent = products.length;
+  const rb = document.getElementById('stat-reviews'); if(rb) rb.textContent = reviews.length;
+  const tbody = document.getElementById('admin-table-body');
+  let rows = '';
+  for(let i = 0; i < products.length; i++){
+    const p = products[i];
+    const sizeBadges = (p.sizes||[{w:p.weight,p:p.price}]).map(s=>`<span style="display:inline-block;background:var(--cream-dark);border-radius:6px;padding:2px 7px;margin:2px;white-space:nowrap;font-size:0.78rem">${s.w} – ₹${s.p}</span>`).join('');
+    rows += `<tr draggable="true" data-idx="${i}">
+      <td><span class="drag-handle" title="Drag to reorder">⠿</span></td>
       <td><strong>${p.name}</strong></td>
       <td><span style="background:var(--green-pale);color:var(--green-dark);padding:2px 8px;border-radius:10px;font-size:0.75rem">${p.category}</span></td>
-      <td>${p.weight}</td>
-      <td style="font-weight:700;color:var(--green-dark)">₹${p.price}</td>
-      <td style="white-space:nowrap;">
-        <button class="admin-btn secondary" onclick="moveProduct(${i}, -1)" style="margin-right:4px;padding:6px 10px;font-size:0.75rem" ${!canUp?'disabled':''}>↑</button>
-        <button class="admin-btn secondary" onclick="moveProduct(${i}, 1)" style="margin-right:6px;padding:6px 10px;font-size:0.75rem" ${!canDown?'disabled':''}>↓</button>
+      <td>${sizeBadges}</td>
+      <td style="text-align:center">
+        <button onclick="toggleFeatured(${i})" title="${p.featured?'Remove from homepage':'Show on homepage'}"
+          style="background:${p.featured?'var(--gold)':'var(--cream-dark)'};color:${p.featured?'var(--green-dark)':'var(--text-light)'};border:none;border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:600;cursor:pointer">
+          ${p.featured ? '⭐ Featured' : '☆ Feature'}
+        </button>
       </td>
       <td>
         <button class="admin-btn secondary" onclick="openEditModal(${i})" style="margin-right:6px;padding:6px 12px;font-size:0.75rem">✏️ Edit</button>
         <button class="admin-btn danger" onclick="deleteProduct(${i})" style="padding:6px 12px;font-size:0.75rem">🗑️ Delete</button>
       </td>
-    </tr>
-  `}).join('');
+    </tr>`;
+  }
+  tbody.innerHTML = rows;
+  initDragReorder(tbody);
+}
+
+function toggleFeatured(i){
+  products[i].featured = !products[i].featured;
+  saveProducts();
+  renderAdminTable();
+  showToast(products[i].featured ? '⭐ Added to homepage!' : 'Removed from homepage');
+}
+
+function initDragReorder(tbody){
+  let dragIdx = null;
+  tbody.querySelectorAll('tr').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragIdx = parseInt(row.getAttribute('data-idx'));
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      const dropIdx = parseInt(row.getAttribute('data-idx'));
+      if(dragIdx === null || dragIdx === dropIdx) return;
+      // Reorder products array
+      const moved = products.splice(dragIdx, 1)[0];
+      products.splice(dropIdx, 0, moved);
+      saveProducts();
+      renderAdminTable();
+      showToast('✅ Order updated — homepage reflects new order');
+    });
+  });
 }
 function addSizeRow(w='',p=''){
   const list=document.getElementById('sizes-list');
@@ -1559,17 +1686,6 @@ function deleteProduct(i){
     products.splice(i,1);
     saveProducts();renderAdminTable();showToast('Product deleted');
   }
-}
-
-function moveProduct(index, direction){
-  const to = index + direction;
-  if(to < 0 || to >= products.length) return;
-  [products[index], products[to]] = [products[to], products[index]];
-  saveProducts();
-  renderAdminTable();
-  // If featured/product pages are visible, refresh them too
-  if(document.getElementById('home-page').classList.contains('active')) renderFeatured();
-  if(document.getElementById('products-page').classList.contains('active')) renderProductsPage();
 }
 
 // ===================== UTILS =====================
