@@ -246,12 +246,36 @@ section{padding:80px 24px}
 .product-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--green-dark);line-height:1.3;margin-bottom:4px}
 .product-weight{font-size:0.8rem;color:var(--text-light);margin-bottom:12px}
 .product-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid var(--cream-dark)}
-.size-qty-row{display:flex;gap:10px;align-items:flex-end;margin:10px 0 0;flex-wrap:wrap}
-.size-select-wrap{flex:1;min-width:110px}
-.qty-select-wrap{flex-shrink:0}
+.size-pills{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 6px}
+.size-pill{
+  padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;cursor:pointer;
+  border:2px solid rgba(26,58,42,0.18);background:var(--cream);color:var(--text-mid);
+  transition:all 0.18s;user-select:none;
+}
+.size-pill:hover{border-color:var(--green-mid);color:var(--green-dark)}
+.size-pill.active{background:var(--green-dark);color:var(--white);border-color:var(--green-dark)}
 .size-label{display:block;font-size:0.7rem;font-weight:600;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-.size-select{width:100%;padding:7px 10px;border-radius:var(--radius-sm);border:1px solid rgba(26,58,42,0.2);background:var(--cream);font-size:0.82rem;color:var(--text-dark);cursor:pointer;transition:border 0.2s}
-.size-select:focus{border-color:var(--green-mid)}
+/* Add-to-cart → in-cart counter */
+.add-btn{
+  background:var(--green-dark);color:var(--white);
+  padding:10px 0;border-radius:10px;font-size:0.88rem;font-weight:700;
+  transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:4px;
+  width:100%;border:none;cursor:pointer;
+}
+.add-btn:hover{background:var(--green-mid);transform:translateY(-1px)}
+.add-btn.added{background:var(--green-mid)}
+.incart-ctrl{
+  display:none;align-items:center;justify-content:space-between;
+  background:var(--green-dark);border-radius:10px;padding:6px 6px;width:100%;
+}
+.incart-ctrl.show{display:flex}
+.incart-ctrl button{
+  background:rgba(255,255,255,0.15);color:white;border:none;
+  width:32px;height:32px;border-radius:8px;font-size:1.1rem;font-weight:700;
+  cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;
+}
+.incart-ctrl button:hover{background:rgba(255,255,255,0.28)}
+.incart-ctrl .incart-num{color:white;font-weight:700;font-size:0.95rem;min-width:24px;text-align:center}
 .product-price{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--green-dark)}
 .product-price span{font-size:0.85rem;font-weight:400;color:var(--text-light)}
 .add-btn{
@@ -1290,15 +1314,19 @@ function showPage(name){
 }
 
 // ===================== PRODUCT CARD =====================
-function productCard(p,showAddBtn=true){
+function productCard(p, showAddBtn=true){
   const imgContent = p.img
     ? `<img src="${p.img}" alt="${p.name}" loading="lazy">`
     : `<div style="font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%">${CAT_EMOJIS[p.category]||'🌿'}</div>`;
   const badge = p.category==='Idli Podi'?'Podi':p.category==='Rice Podi'?'Podi':p.category==='Masala'?'Spice':p.category==='Health Mix'?'Health':'Flour';
-  // Build size options
-  const sizes = p.sizes || [{w:p.weight,p:p.price}];
+  const sizes = p.sizes || [{w:p.weight, p:p.price}];
   const defaultSize = sizes[0];
-  const sizeOpts = sizes.map((s,i)=>`<option value="${i}" data-price="${s.p}" data-weight="${s.w}">${s.w} — ₹${s.p}</option>`).join('');
+  const pillsHTML = sizes.map((s,i)=>`
+    <button class="size-pill${i===0?' active':''}"
+      data-idx="${i}" data-price="${s.p}" data-weight="${s.w}"
+      onclick="selectSizePill(${p.id},this)">
+      ${s.w}
+    </button>`).join('');
   return `
   <div class="product-card fade-in" id="pc-${p.id}">
     <div class="product-img-wrap">
@@ -1309,80 +1337,99 @@ function productCard(p,showAddBtn=true){
       <div class="product-category">${CAT_LABELS[p.category]||p.category}</div>
       <div class="product-name">${p.name}</div>
       ${showAddBtn ? `
-      <div class="size-qty-row">
-        <div class="size-select-wrap">
-          <label class="size-label">Size</label>
-          <select class="size-select" id="size-${p.id}" onchange="updateCardPrice(${p.id},this)">
-            ${sizeOpts}
-          </select>
-        </div>
-        <div class="qty-select-wrap">
-          <label class="size-label">Qty</label>
-          <div style="display:flex;align-items:center;gap:6px">
-            <button class="qty-btn" onclick="changeCardQty(${p.id},-1)">−</button>
-            <span class="qty-num" id="cardqty-${p.id}">1</span>
-            <button class="qty-btn" onclick="changeCardQty(${p.id},1)">+</button>
-          </div>
-        </div>
+      <div class="size-pills" id="pills-${p.id}">${pillsHTML}</div>
+      <div class="product-price" id="cardprice-${p.id}" style="margin:6px 0 10px;font-size:1rem;font-weight:700;color:var(--green-dark)">
+        &#8377;${defaultSize.p} <span style="font-size:0.78rem;font-weight:400;color:var(--text-light)">/ ${defaultSize.w}</span>
       </div>
-      <div class="product-footer">
-        <div class="product-price" id="cardprice-${p.id}">₹${defaultSize.p} <span>/ ${defaultSize.w}</span></div>
-        <button class="add-btn" onclick="addToCartFromCard(${p.id})" id="addbtn-${p.id}">+ Cart</button>
+      <button class="add-btn" onclick="addToCartFromCard(${p.id})" id="addbtn-${p.id}">
+        &#128722; Add to Cart
+      </button>
+      <div class="incart-ctrl" id="incart-${p.id}">
+        <button onclick="inCartMinus(${p.id})">&#8722;</button>
+        <span class="incart-num" id="incartnum-${p.id}">1</span>
+        <button onclick="inCartPlus(${p.id})">&#43;</button>
       </div>` : `
-      <div class="product-weight">📦 ${p.weight}</div>
-      <div class="product-footer">
-        <div class="product-price">₹${p.price} <span>/ ${p.weight}</span></div>
-      </div>`}
+      <div class="product-weight" style="margin:6px 0">&#128230; ${p.weight}</div>
+      <div class="product-price" style="font-weight:700;color:var(--green-dark)">&#8377;${p.price}</div>`}
     </div>
   </div>`;
 }
 
-function updateCardPrice(pid, sel) {
-  const opt = sel.options[sel.selectedIndex];
-  const price = opt.getAttribute('data-price');
-  const weight = opt.getAttribute('data-weight');
-  const el = document.getElementById('cardprice-'+pid);
-  if(el) el.innerHTML = `₹${price} <span>/ ${weight}</span>`;
-  // Reset qty to 1
-  const qtyEl = document.getElementById('cardqty-'+pid);
-  if(qtyEl) qtyEl.textContent = '1';
-  // Reset button
-  const btn = document.getElementById('addbtn-'+pid);
-  if(btn){btn.textContent='+ Cart';btn.classList.remove('added');}
+function selectSizePill(pid, btn){
+  document.querySelectorAll('#pills-'+pid+' .size-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const price  = btn.getAttribute('data-price');
+  const weight = btn.getAttribute('data-weight');
+  const priceEl = document.getElementById('cardprice-'+pid);
+  if(priceEl) priceEl.innerHTML = '&#8377;'+price+' <span style="font-size:0.78rem;font-weight:400;color:var(--text-light)">/ '+weight+'</span>';
+  // Reset to add-btn if this size not in cart
+  const cartKey = pid+'_'+weight;
+  const inCartItem = cart.find(c=>(c.cartKey||c.id)===cartKey);
+  if(inCartItem){ showInCartCtrl(pid, inCartItem.qty); }
+  else { showAddBtnCard(pid); }
 }
 
-function changeCardQty(pid, delta) {
-  const qtyEl = document.getElementById('cardqty-'+pid);
-  if(!qtyEl) return;
-  let q = parseInt(qtyEl.textContent) + delta;
-  if(q < 1) q = 1;
-  if(q > 20) q = 20;
-  qtyEl.textContent = q;
+function showAddBtnCard(pid){
+  const addBtn = document.getElementById('addbtn-'+pid);
+  const inCart = document.getElementById('incart-'+pid);
+  if(addBtn) addBtn.style.display='flex';
+  if(inCart) inCart.classList.remove('show');
 }
+
+function showInCartCtrl(pid, qty){
+  const addBtn = document.getElementById('addbtn-'+pid);
+  const inCart = document.getElementById('incart-'+pid);
+  const numEl  = document.getElementById('incartnum-'+pid);
+  if(addBtn) addBtn.style.display='none';
+  if(inCart) inCart.classList.add('show');
+  if(numEl)  numEl.textContent = qty;
+}
+
+function inCartPlus(pid){
+  const activePill = document.querySelector('#pills-'+pid+' .size-pill.active');
+  if(!activePill) return;
+  const weight  = activePill.getAttribute('data-weight');
+  const cartKey = pid+'_'+weight;
+  const item    = cart.find(c=>(c.cartKey||c.id)===cartKey);
+  if(item){ item.qty++; saveCart(); document.getElementById('incartnum-'+pid).textContent=item.qty; }
+}
+
+function inCartMinus(pid){
+  const activePill = document.querySelector('#pills-'+pid+' .size-pill.active');
+  if(!activePill) return;
+  const weight  = activePill.getAttribute('data-weight');
+  const cartKey = pid+'_'+weight;
+  const item    = cart.find(c=>(c.cartKey||c.id)===cartKey);
+  if(!item) return;
+  item.qty--;
+  if(item.qty<=0){
+    cart=cart.filter(c=>(c.cartKey||c.id)!==cartKey);
+    saveCart(); showAddBtnCard(pid); showToast('Item removed');
+  } else {
+    saveCart(); document.getElementById('incartnum-'+pid).textContent=item.qty;
+  }
+}
+
+// Size pill logic replaces updateCardPrice / changeCardQty
+
 
 function addToCartFromCard(pid) {
   const product = products.find(p=>p.id===pid);
   if(!product) return;
-  const sel = document.getElementById('size-'+pid);
-  const qtyEl = document.getElementById('cardqty-'+pid);
-  const qty = parseInt(qtyEl?.textContent||'1')||1;
+  const activePill = document.querySelector(`#pills-${pid} .size-pill.active`);
   let weight = product.weight, price = product.price;
-  if(sel) {
-    const opt = sel.options[sel.selectedIndex];
-    weight = opt.getAttribute('data-weight');
-    price = parseInt(opt.getAttribute('data-price'));
+  if(activePill){
+    weight = activePill.getAttribute('data-weight');
+    price  = parseInt(activePill.getAttribute('data-price'));
   }
-  // Cart key = id + weight combo
-  const cartKey = `${pid}_${weight}`;
-  const existing = cart.find(c=>c.cartKey===cartKey);
-  if(existing){ existing.qty += qty; }
-  else { cart.push({...product, cartKey, weight, price, qty}); }
+  const cartKey = pid+'_'+weight;
+  const existing = cart.find(c=>(c.cartKey||c.id)===cartKey);
+  if(existing){ existing.qty++; }
+  else { cart.push({...product, cartKey, weight, price, qty:1}); }
   saveCart();
-  showToast(`${product.name} (${weight} × ${qty}) added! 🛒`);
-  const btn = document.getElementById('addbtn-'+pid);
-  if(btn){btn.textContent='✓ Added';btn.classList.add('added');
-    setTimeout(()=>{btn.textContent='+ Cart';btn.classList.remove('added');},1800);
-  }
+  showToast(`${product.name} (${weight}) added! 🛒`);
+  const item = cart.find(c=>(c.cartKey||c.id)===cartKey);
+  showInCartCtrl(pid, item.qty);
 }
 
 // ===================== FEATURED =====================
@@ -1478,7 +1525,7 @@ function renderCart(){
   el.innerHTML=itemsHTML+`
     <div class="cart-summary">
       <div class="summary-row"><span>Subtotal (${cart.reduce((s,i)=>s+i.qty,0)} items)</span><span>₹${subtotal}</span></div>
-      <div class="summary-row"><span>Delivery</span><span style="color:var(--green-mid)">Free (discuss on WhatsApp)</span></div>
+      <div class="summary-row"><span>Delivery</span><span style="color:var(--green-mid)">Discuss on WhatsApp</span></div>
       <div class="summary-row total"><span>Total</span><span>₹${subtotal}</span></div>
       <button class="whatsapp-checkout" onclick="checkoutWhatsApp()">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
@@ -1507,10 +1554,24 @@ function openWhatsApp(msg){
 }
 function checkoutWhatsApp(){
   if(cart.length===0){showToast('Your cart is empty!');return}
-  const subtotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  let msg='Hello Thulasi Foods,\n\nI would like to place an order.\n\nProducts:\n';
-  cart.forEach((item,i)=>{msg+=`${i+1}. ${item.name} – ${item.weight} – Qty: ${item.qty} – ₹${item.price*item.qty}\n`});
-  msg+=`\nTotal Amount: ₹${subtotal}\n\nName:\nAddress:\nPhone Number:`;
+  const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const ref = 'TF' + Date.now().toString(36).toUpperCase().slice(-5);
+  const dateStr = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+
+  let msg = '';
+  msg += 'Hello Thulasi Foods,\n';
+  msg += 'I would like to place an order.\n\n';
+  msg += 'Products:\n';
+
+  cart.forEach((item, i) => {
+    msg += `${i + 1}. ${item.name} - ${item.weight} - Qty: ${item.qty} - Rs.${item.price * item.qty}\n`;
+  });
+
+  msg += `\nTotal Amount: Rs.${subtotal}\n\n`;
+  msg += 'Name:\n';
+  msg += 'Address:\n';
+  msg += 'Phone Number:';
+
   openWhatsApp(msg);
 }
 function sendContactWhatsApp(){
