@@ -1234,6 +1234,56 @@ footer{
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDwX_rtya2QOdeg6UE04Wbnr-TJ574bya4",
+  authDomain: "thulasi-foods.firebaseapp.com",
+  databaseURL: "https://thulasi-foods-default-rtdb.firebaseio.com",
+  projectId: "thulasi-foods",
+  storageBucket: "thulasi-foods.firebasestorage.app",
+  messagingSenderId: "582178934703",
+  appId: "1:582178934703:web:64b893c5f82ba7201ca95a"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+
+// Save helpers – called from main script
+window._fbSave = function(key, data) {
+  set(ref(db, key), data).catch(e => console.warn('FB save error:', e));
+};
+
+// Load everything once on startup
+window._fbLoadAll = function(callback) {
+  get(ref(db, '/')).then(snap => {
+    const v = snap.val() || {};
+    callback(v.products || null, v.reviews || null);
+  }).catch(() => callback(null, null));
+};
+
+// Live listeners – update all devices when data changes
+onValue(ref(db, 'products'), snap => {
+  const data = snap.val();
+  if (!data || !window._appReady) return;
+  window.products = data;
+  if (typeof renderFeatured === 'function') renderFeatured();
+  if (typeof renderProducts === 'function') renderProducts();
+  if (window._adminLoggedIn && typeof renderAdminTable === 'function') renderAdminTable();
+});
+
+onValue(ref(db, 'reviews'), snap => {
+  const data = snap.val();
+  if (!data || !window._appReady) return;
+  window.reviews = data;
+  if (typeof renderReviews === 'function') renderReviews();
+  if (window._adminLoggedIn && typeof renderAdminReviews === 'function') renderAdminReviews();
+});
+</script>
+
 <script>
 // ===================== DATA =====================
 const WHATSAPP_NUMBER = '919489721528';
@@ -1269,9 +1319,12 @@ const CAT_LABELS = {'Idli Podi':'Idli Podi Varieties','Rice Podi':'Rice Podi','M
 let products = JSON.parse(localStorage.getItem('tf_products') || 'null') || DEFAULT_PRODUCTS;
 let cart = JSON.parse(localStorage.getItem('tf_cart') || '[]');
 let currentFilter = 'all';
-let adminLoggedIn = false;
+let adminLoggedIn = false; window._adminLoggedIn = false;
 
-function saveProducts(){localStorage.setItem('tf_products',JSON.stringify(products))}
+function saveProducts(){
+  localStorage.setItem('tf_products', JSON.stringify(products));
+  if (window._fbSave) window._fbSave('products', products);
+}
 function saveCart(){localStorage.setItem('tf_cart',JSON.stringify(cart));updateCartBadge()}
 
 // ===================== PAGE NAVIGATION =====================
@@ -1588,7 +1641,7 @@ function doAdminLogin(){
   const u=document.getElementById('admin-user').value;
   const p=document.getElementById('admin-pass').value;
   if(u==='thulasi'&&p==='thulasi@11.11'){
-    adminLoggedIn=true;
+    adminLoggedIn=true; window._adminLoggedIn=true;
     document.getElementById('admin-error').style.display='none';
     showPage('admin-dashboard');
   }else{
@@ -1596,7 +1649,7 @@ function doAdminLogin(){
   }
 }
 function adminLogout(){
-  adminLoggedIn=false;
+  adminLoggedIn=false; window._adminLoggedIn=false;
   showPage('home');
 }
 function renderAdminTable(){
@@ -1775,6 +1828,7 @@ if(reviews === null) {
     {name:'Karthik R.',product:'Kulambu Milagai Thool',rating:4,text:'Perfect spice level. The kulambu turned out amazing. Highly recommend Thulasi Foods!',date:'2025-02-01'},
   ];
   localStorage.setItem('tf_reviews', JSON.stringify(reviews));
+  if (window._fbSave) window._fbSave('reviews', reviews);
 }
 
 function setRating(n) {
@@ -1797,6 +1851,7 @@ function submitReview() {
     date: new Date().toISOString().slice(0,10)
   });
   localStorage.setItem('tf_reviews', JSON.stringify(reviews));
+  if (window._fbSave) window._fbSave('reviews', reviews);
   document.getElementById('rv-name').value = '';
   document.getElementById('rv-product').value = '';
   document.getElementById('rv-text').value = '';
@@ -1911,6 +1966,7 @@ function renderAdminReviews() {
 function deleteReview(i) {
   reviews.splice(i, 1);
   localStorage.setItem('tf_reviews', JSON.stringify(reviews));
+  if (window._fbSave) window._fbSave('reviews', reviews);
   renderAdminReviews();
   renderReviews();
   const badge = document.getElementById('stat-reviews');
@@ -1919,17 +1975,65 @@ function deleteReview(i) {
 }
 
 // ===================== INIT =====================
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded', () => {
   // Inject logo everywhere
-  document.querySelectorAll('img[src="LOGO_PLACEHOLDER"]').forEach(img=>{
-    img.src=LOGO_SRC;
+  document.querySelectorAll('img[src="LOGO_PLACEHOLDER"]').forEach(img => {
+    img.src = LOGO_SRC;
   });
   updateCartBadge();
-  renderFeatured();
-  renderReviews();
   observeFade();
-  // Admin shortcut: visit /#admin
-  if(location.hash==='#admin'){showPage('admin')}
+  if (location.hash === '#admin') { showPage('admin'); }
+
+  // Show loading indicator on home
+  const featGrid = document.getElementById('featured-grid');
+  if (featGrid) featGrid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);grid-column:1/-1">Loading products...</div>';
+
+  function bootApp(fbProducts, fbReviews) {
+    // ── Products ──
+    if (fbProducts) {
+      products = fbProducts;
+      localStorage.setItem('tf_products', JSON.stringify(products));
+    }
+    // If Firebase had no products yet, push defaults up now
+    if (!fbProducts && products) {
+      if (window._fbSave) window._fbSave('products', products);
+    }
+
+    // ── Reviews ──
+    if (fbReviews) {
+      reviews = fbReviews;
+      localStorage.setItem('tf_reviews', JSON.stringify(reviews));
+      if (window._fbSave) window._fbSave('reviews', reviews);
+    } else {
+      // Seed defaults to Firebase on very first run
+      if (reviews === null) {
+        reviews = [
+          {name:'Priya M.',product:'Murungai Idli Podi',rating:5,text:'Absolutely delicious! The taste is exactly like my grandmother used to make. Fresh and aromatic.',date:'2025-01-10'},
+          {name:'Ramya S.',product:'Multigrain Health Mix',rating:5,text:'My kids love this health mix. No artificial flavours at all — pure and wholesome!',date:'2025-01-15'},
+          {name:'Karthik R.',product:'Kulambu Milagai Thool',rating:4,text:'Perfect spice level. The kulambu turned out amazing. Highly recommend Thulasi Foods!',date:'2025-02-01'},
+        ];
+      }
+      if (window._fbSave) window._fbSave('reviews', reviews);
+      localStorage.setItem('tf_reviews', JSON.stringify(reviews));
+      if (window._fbSave) window._fbSave('reviews', reviews);
+    }
+
+    renderFeatured();
+    renderReviews();
+    // Enable live listeners after first render
+    window._appReady = true;
+  }
+
+  // Try Firebase, fall back gracefully if offline
+  if (window._fbLoadAll) {
+    window._fbLoadAll(bootApp);
+  } else {
+    // Firebase module may still be loading — wait briefly
+    setTimeout(() => {
+      if (window._fbLoadAll) window._fbLoadAll(bootApp);
+      else bootApp(null, null);
+    }, 2000);
+  }
 });
 </script>
 </body>
