@@ -3,6 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thulasi Homemade Foods – Traditional Homemade Spices from Tamil Nadu</title>
+<meta name="description" content="Buy authentic homemade idli podi, chilli powder, multigrain health mix & traditional spices online. Made fresh in Tamil Nadu. Delivery all over India.">
+<meta name="keywords" content="thulasi foods, thulasi homemade foods, homemade idli podi, murungai idli podi, karuveppilai podi, pirandai podi, homemade spices online india, traditional spices tamilnadu, delivery all india">
+<meta name="author" content="Thulasi Homemade Foods">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="IN-TN">
+<meta name="geo.placename" content="Tamil Nadu, India">
+<link rel="canonical" href="https://thulasifoods.online/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Thulasi Homemade Foods – Traditional Homemade Spices from Tamil Nadu">
+<meta property="og:description" content="Buy authentic homemade idli podi, chilli powder, multigrain health mix & traditional spices online. Made fresh in Tamil Nadu. Delivery all over India.">
+<meta property="og:url" content="https://thulasifoods.online/">
+<meta property="og:site_name" content="Thulasi Homemade Foods">
+<script type="application/ld+json">{
+  "@context":"https://schema.org","@type":"LocalBusiness",
+  "name":"Thulasi Homemade Foods",
+  "telephone":"+919489721528",
+  "address":{"@type":"PostalAddress","addressRegion":"Tamil Nadu","addressCountry":"IN"},
+  "areaServed":"India","url":"https://thulasifoods.online",
+  "sameAs":["https://www.instagram.com/thulasi_homemade_foods"]
+}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Thulasi Homemade Foods","url":"https://thulasifoods.online"}</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thulasi Foods – Traditional Homemade Spices</title>
 <meta name="description" content="Thulasi Foods – Premium homemade traditional spices, podis, flours and health mixes. No preservatives. Fresh. Authentic.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -710,8 +735,10 @@ footer{
   section{padding:60px 16px}
 }
 </style>
+
 </head>
 <body>
+
 
 <!-- NAVBAR -->
 <nav id="main-nav">
@@ -1028,12 +1055,7 @@ footer{
         <button class="submit-btn" onclick="sendContactWhatsApp()">Send via WhatsApp</button>
       </div>
     </div>
-    <div class="map-placeholder">
-      <div style="font-size:2rem">📍</div>
-      <p style="font-weight:600;color:var(--text-mid)">Thulasi Foods</p>
-      <p style="font-size:0.85rem">Tamil Nadu, India</p>
-      <button onclick="openWhatsApp('Hi, I want to know your location.')" style="background:var(--green-dark);color:white;padding:10px 20px;border-radius:20px;font-size:0.85rem;cursor:pointer;margin-top:8px">📱 Ask for Location on WhatsApp</button>
-    </div>
+
   </div>
 </div>
 
@@ -1199,7 +1221,8 @@ footer{
       <h4>Contact Us</h4>
       <ul>
         <li><span>📱 +91 9489721528</span></li>
-        <li><span>🕐 9 AM – 8 PM</span></li>
+        <li><span>🕐 9 AM – 8 PM (Mon–Sat)</span></li>
+        <li><span>📍 Tamil Nadu, India</span></li>
         <li><span>📦 Home Delivery</span></li>
         <li><span>🚚 Pan India Courier</span></li>
       </ul>
@@ -1233,7 +1256,6 @@ footer{
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
-
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1284,6 +1306,7 @@ onValue(ref(db, 'reviews'), snap => {
 });
 </script>
 
+
 <script>
 // ===================== DATA =====================
 const WHATSAPP_NUMBER = '919489721528';
@@ -1329,6 +1352,19 @@ function saveCart(){localStorage.setItem('tf_cart',JSON.stringify(cart));updateC
 
 // ===================== PAGE NAVIGATION =====================
 function showPage(name){
+  // ── Multi-page: navigate to correct file ──
+  const FILE_MAP={
+    home:'index.html', products:'products.html', cart:'cart.html',
+    about:'about.html', contact:'contact.html', admin:'admin.html',
+    'reviews-section-scroll':'index.html#reviews-section'
+  };
+  const cur=location.pathname.split('/').pop()||'index.html';
+  if(FILE_MAP[name]){
+    const dest=FILE_MAP[name];
+    const destFile=dest.split('#')[0];
+    if(cur!==destFile){location.href=dest;return;}
+  }
+
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('admin-dashboard').style.display='none';
   document.getElementById('main-nav').style.display='';
@@ -1355,6 +1391,10 @@ function showPage(name){
   }
   const el=document.getElementById(pageMap[name]);
   if(el){el.classList.add('active')}
+  // Fix: re-render products AFTER page is visible so cards appear correctly
+  if(name==='products'){
+    setTimeout(()=>{filterProducts();},0);
+  }
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
   const linkMap={home:0,products:1,about:2,contact:3};
   if(linkMap[name]!==undefined){
@@ -1810,10 +1850,16 @@ function closeMobile(){
   document.getElementById('mobile-menu').classList.remove('open');
 }
 function observeFade(){
+  // Immediately show cards on already-active pages (fixes "All" tab blank on first load)
+  document.querySelectorAll('.fade-in').forEach(el=>{
+    const pg=el.closest('.page');
+    if(!pg||pg.classList.contains('active')){el.classList.add('visible');}
+  });
+  // Observer for elements that scroll into view
   const obs=new IntersectionObserver((entries)=>{
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
-  },{threshold:0.1});
-  document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+  },{threshold:0.05,rootMargin:'0px 0px 300px 0px'});
+  document.querySelectorAll('.fade-in:not(.visible)').forEach(el=>obs.observe(el));
 }
 
 // ===================== REVIEWS =====================
@@ -1982,7 +2028,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   updateCartBadge();
   observeFade();
-  if (location.hash === '#admin') { showPage('admin'); }
+  // Auto-activate correct page based on filename
+  (function(){
+    const fn=location.pathname.split('/').pop()||'index.html';
+    const m={'index.html':'home','products.html':'products','cart.html':'cart',
+             'about.html':'about','contact.html':'contact','admin.html':'admin'};
+    const pg=m[fn]||'home';
+    // Direct internal activation (no redirect loop)
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('admin-dashboard').style.display='none';
+    const pageMap={home:'home-page',products:'products-page',cart:'cart-page',
+      about:'about-page',contact:'contact-page',admin:'admin-login'};
+    const el=document.getElementById(pageMap[pg]);
+    if(el) el.classList.add('active');
+    document.querySelectorAll('.nav-link:not(.nav-cart-btn)').forEach((l,i)=>{
+      l.classList.toggle('active',i==={home:0,products:1,about:2,contact:3}[pg]);
+    });
+    if(pg==='admin'){
+      document.getElementById('main-nav').style.display='none';
+      document.getElementById('main-footer').style.display='none';
+      document.querySelector('.float-wa').style.display='none';
+    }
+    if(pg==='products') setTimeout(()=>filterProducts(),10);
+    if(pg==='cart') renderCart();
+    if(location.hash==='#reviews-section'){
+      setTimeout(()=>document.getElementById('reviews-section')?.scrollIntoView({behavior:'smooth'}),300);
+    }
+  })();
 
   // Show loading indicator on home
   const featGrid = document.getElementById('featured-grid');
@@ -2020,6 +2092,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderFeatured();
     renderReviews();
+    // Render products immediately so products page works on direct load
+    filterProducts();
     // Enable live listeners after first render
     window._appReady = true;
   }
