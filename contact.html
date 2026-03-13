@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>Contact Thulasi Homemade Foods | WhatsApp +91 94897 21528</title>
-<meta name="description" content="Contact Thulasi Homemade Foods on WhatsApp +91 94897 21528. Order homemade spices and podis online. Delivery all over India.">
-<meta name="keywords" content="thulasi foods contact, order homemade spices whatsapp, buy homemade idli podi contact, thulasi foods phone number">
+<meta name="description" content="Contact Thulasi Homemade Foods on WhatsApp +91 94897 21528. Order homemade spices online. Delivery all over India.">
+<meta name="keywords" content="thulasi foods contact, order homemade spices whatsapp">
 <meta name="author" content="Thulasi Homemade Foods">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="IN-TN">
@@ -13,18 +13,16 @@
 <link rel="canonical" href="https://thulasifoods.online/contact.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Contact Thulasi Homemade Foods | WhatsApp +91 94897 21528">
-<meta property="og:description" content="Contact Thulasi Homemade Foods on WhatsApp +91 94897 21528. Order homemade spices and podis online. Delivery all over India.">
+<meta property="og:description" content="Contact Thulasi Homemade Foods on WhatsApp +91 94897 21528. Order homemade spices online. Delivery all over India.">
 <meta property="og:url" content="https://thulasifoods.online/contact.html">
 <meta property="og:site_name" content="Thulasi Homemade Foods">
 <script type="application/ld+json">{
   "@context":"https://schema.org","@type":"LocalBusiness",
-  "name":"Thulasi Homemade Foods",
-  "telephone":"+919489721528",
+  "name":"Thulasi Homemade Foods","telephone":"+919489721528",
   "address":{"@type":"PostalAddress","addressRegion":"Tamil Nadu","addressCountry":"IN"},
   "areaServed":"India","url":"https://thulasifoods.online",
   "sameAs":["https://www.instagram.com/thulasi_homemade_foods"]
 }</script>
-
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +54,7 @@ html{scroll-behavior:smooth;font-size:16px}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{text-decoration:none;color:inherit}
-button{cursor:pointer;border:none;outline:none;font-family:'Jost',sans-serif}
+button{cursor:pointer;border:none;outline:none;font-family:'Jost',sans-serif;-webkit-tap-highlight-color:transparent;-webkit-appearance:none}
 input,textarea,select{font-family:'Jost',sans-serif;outline:none}
 
 /* SCROLLBAR */
@@ -276,6 +274,7 @@ section{padding:80px 24px}
   padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;cursor:pointer;
   border:2px solid rgba(26,58,42,0.18);background:var(--cream);color:var(--text-mid);
   transition:all 0.18s;user-select:none;
+  -webkit-tap-highlight-color:transparent;-webkit-appearance:none;outline:none;
 }
 .size-pill:hover{border-color:var(--green-mid);color:var(--green-dark)}
 .size-pill.active{background:var(--green-dark);color:var(--white);border-color:var(--green-dark)}
@@ -301,8 +300,9 @@ section{padding:80px 24px}
 }
 .incart-ctrl button:hover{background:rgba(255,255,255,0.28)}
 .incart-ctrl .incart-num{color:white;font-weight:700;font-size:0.95rem;min-width:24px;text-align:center}
-.product-price{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--green-dark)}
-.product-price span{font-size:0.85rem;font-weight:400;color:var(--text-light)}
+.product-price{font-family:'Jost',sans-serif;font-size:1.15rem;font-weight:700;color:var(--green-dark);letter-spacing:-0.3px}
+.product-price .price-amount{font-size:1.15rem;font-weight:700;color:var(--green-dark)}
+.product-price .price-weight{font-size:0.78rem;font-weight:400;color:var(--text-light);margin-left:2px}
 .add-btn{
   background:var(--green-dark);color:var(--white);
   padding:8px 16px;border-radius:20px;font-size:0.8rem;font-weight:600;
@@ -710,29 +710,152 @@ footer{
 .size-row .del-size:hover{background:#ffe0e0}
 
 /* ===== RESPONSIVE ===== */
+
+/* ===== RESPONSIVE — 1024px (small laptop/tablet landscape) ===== */
+@media(max-width:1024px){
+  .hero-inner{gap:32px}
+  .hero-title{font-size:clamp(2rem,4vw,3.2rem)}
+  .products-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+  .footer-inner{grid-template-columns:1.5fr 1fr 1fr;gap:32px}
+}
+
+/* ===== RESPONSIVE — 768px (tablet portrait) ===== */
 @media(max-width:768px){
+  /* Nav */
   .nav-links{display:none}
   .hamburger{display:flex}
-  .hero-inner{grid-template-columns:1fr;gap:40px;text-align:center}
+  .nav-inner{height:60px}
+  .mobile-menu{top:60px}
+  .nav-logo img{height:44px;width:44px}
+  .nav-logo-text .brand{font-size:1.25rem}
+
+  /* Hero */
+  .hero{padding:40px 20px;min-height:auto}
+  .hero-inner{grid-template-columns:1fr;gap:32px;text-align:center}
   .hero-image{order:-1}
-  .hero-logo-wrap{width:min(280px,80vw);margin:0 auto}
+  .hero-logo-wrap{width:min(240px,70vw);margin:0 auto}
   .hero-logo-circle{width:200px!important;height:200px!important}
-  .hero-features{grid-template-columns:1fr 1fr}
-  .hero-btns{justify-content:center}
-  .features-strip-inner{gap:12px}
-  .strip-item-label{font-size:0.75rem}
-  .about-story{grid-template-columns:1fr;gap:32px}
-  .about-values{grid-template-columns:1fr 1fr}
-  .contact-grid{grid-template-columns:1fr;gap:24px}
-  .footer-inner{grid-template-columns:1fr;gap:32px}
+  .hero-features{grid-template-columns:1fr 1fr;gap:10px}
+  .hero-btns{justify-content:center;gap:10px}
+  .hero-title{font-size:clamp(2rem,6vw,3rem)}
+  .hero-tagline{font-size:0.95rem}
+  .hero-feat{padding:10px 12px}
+  .hero-feat-icon{font-size:1.2rem}
+  .hero-feat-label{font-size:0.8rem}
+
+  /* Strip */
+  .features-strip{padding:16px 16px}
+  .features-strip-inner{gap:10px;justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+  .strip-item{flex-shrink:0}
+  .strip-item-label{font-size:0.72rem}
+
+  /* Sections */
+  section{padding:48px 20px}
+  .max-w{padding:0}
+  .section-title{font-size:1.8rem}
+
+  /* Products */
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .products-page-header{padding:40px 20px 32px}
+  .products-page-header h1{font-size:1.8rem}
+  .products-controls{padding:20px 16px 0;flex-direction:column;align-items:stretch;gap:10px}
+  .search-wrap{max-width:100%}
+  .filter-chips{gap:6px;flex-wrap:wrap}
+  .chip{font-size:0.75rem;padding:6px 12px}
+  .category-section{padding:28px 16px}
+  .category-title{font-size:1.3rem}
+  .product-name{font-size:1.05rem}
+  .product-info{padding:14px}
+  .size-pill{padding:5px 10px;font-size:0.73rem}
+
+  /* About */
+  .about-story{grid-template-columns:1fr;gap:24px}
+  .about-values{grid-template-columns:1fr 1fr;gap:16px}
+  .about-hero{padding:48px 20px}
+  .about-content{padding:32px 20px}
+
+  /* Contact */
+  .contact-grid{grid-template-columns:1fr;gap:20px}
+  .contact-hero{padding:48px 20px}
+  .contact-content{padding:32px 20px}
+
+  /* Cart */
+  .cart-header{padding:32px 20px}
+  .cart-content{padding:20px 16px}
+
+  /* Footer */
+  .footer-inner{grid-template-columns:1fr;gap:28px}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center}
+  .footer-brand{text-align:center}
+  .footer-logo-wrap{justify-content:center}
+  .footer-social{justify-content:center}
+
+  /* Admin */
   .admin-stats{grid-template-columns:1fr 1fr}
-  .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+  .admin-table-wrap{overflow-x:auto}
+  .admin-top{flex-direction:column;gap:12px;align-items:flex-start}
+
+  /* Float buttons */
+  .float-cart{width:52px;height:52px;bottom:88px;right:16px}
+  .float-wa{bottom:20px;right:16px}
 }
+
+/* ===== RESPONSIVE — 480px (mobile portrait) ===== */
 @media(max-width:480px){
-  .hero-features{grid-template-columns:1fr 1fr}
-  .admin-stats{grid-template-columns:1fr}
+  /* Nav */
+  .nav-logo-text .brand{font-size:1.1rem}
+  .nav-logo-text .sub{font-size:0.6rem}
+
+  /* Hero */
+  .hero{padding:28px 16px}
+  .hero-features{grid-template-columns:1fr 1fr;gap:8px}
+  .hero-logo-wrap{width:min(200px,65vw)}
+  .hero-logo-circle{width:170px!important;height:170px!important}
+  .hero-btns{flex-direction:column;align-items:center}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center;max-width:300px}
+
+  /* Products */
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .product-info{padding:12px}
+  .product-name{font-size:0.95rem}
+  .product-category{font-size:0.62rem}
+  .size-pills{gap:4px;margin:8px 0 4px}
+  .size-pill{padding:4px 8px;font-size:0.7rem}
+  .product-price{font-size:1rem!important}
+  .price-weight{font-size:0.7rem!important}
+  .add-btn{padding:8px 10px;font-size:0.75rem}
+  .incart-ctrl button{width:28px;height:28px;font-size:0.9rem}
+  .incart-num{font-size:0.85rem}
+  .filter-chips{gap:5px}
+  .chip{font-size:0.72rem;padding:5px 10px}
+
+  /* Sections */
+  section{padding:40px 16px}
+  .section-title{font-size:1.5rem}
+  .section-desc{font-size:0.85rem}
+
+  /* About */
   .about-values{grid-template-columns:1fr}
-  section{padding:60px 16px}
+  .value-card{padding:20px 16px}
+
+  /* Cart */
+  .cart-item{flex-direction:column;gap:12px}
+
+  /* Footer */
+  .footer-col h4{font-size:1rem}
+
+  /* Admin */
+  .admin-stats{grid-template-columns:1fr}
+  .admin-btn{font-size:0.78rem;padding:8px 12px}
+  .modal{padding:20px 16px;max-height:90vh;overflow-y:auto}
+}
+
+/* ===== RESPONSIVE — 360px (small phones) ===== */
+@media(max-width:360px){
+  .products-grid{grid-template-columns:1fr}
+  .hero-features{grid-template-columns:1fr 1fr}
+  .size-pill{padding:3px 7px;font-size:0.68rem}
+  .product-name{font-size:0.9rem}
 }
 </style>
 
@@ -1352,17 +1475,15 @@ function saveCart(){localStorage.setItem('tf_cart',JSON.stringify(cart));updateC
 
 // ===================== PAGE NAVIGATION =====================
 function showPage(name){
-  // ── Multi-page: navigate to correct file ──
   const FILE_MAP={
-    home:'index.html', products:'products.html', cart:'cart.html',
-    about:'about.html', contact:'contact.html', admin:'admin.html',
+    home:'index.html',products:'products.html',cart:'cart.html',
+    about:'about.html',contact:'contact.html',admin:'admin.html',
     'reviews-section-scroll':'index.html#reviews-section'
   };
   const cur=location.pathname.split('/').pop()||'index.html';
   if(FILE_MAP[name]){
     const dest=FILE_MAP[name];
-    const destFile=dest.split('#')[0];
-    if(cur!==destFile){location.href=dest;return;}
+    if(cur!==dest.split('#')[0]){location.href=dest;return;}
   }
 
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -1407,13 +1528,14 @@ function showPage(name){
 }
 
 // ===================== PRODUCT CARD =====================
-function productCard(p, showAddBtn=true){
+function productCard(p, showAddBtn=true, idPrefix=""){
   const imgContent = p.img
     ? `<img src="${p.img}" alt="${p.name}" loading="lazy">`
     : `<div style="font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%">${CAT_EMOJIS[p.category]||'🌿'}</div>`;
   const badge = p.category==='Idli Podi'?'Podi':p.category==='Rice Podi'?'Podi':p.category==='Masala'?'Spice':p.category==='Health Mix'?'Health':'Flour';
   const sizes = p.sizes || [{w:p.weight, p:p.price}];
   const defaultSize = sizes[0];
+  const uid = idPrefix ? idPrefix+p.id : p.id;
   const pillsHTML = sizes.map((s,i)=>`
     <button class="size-pill${i===0?' active':''}"
       data-idx="${i}" data-price="${s.p}" data-weight="${s.w}"
@@ -1421,7 +1543,7 @@ function productCard(p, showAddBtn=true){
       ${s.w}
     </button>`).join('');
   return `
-  <div class="product-card fade-in" id="pc-${p.id}">
+  <div class="product-card fade-in" id="pc-${uid}" data-pid="${p.id}">
     <div class="product-img-wrap">
       ${imgContent}
       <div class="product-badge">${badge}</div>
@@ -1430,17 +1552,17 @@ function productCard(p, showAddBtn=true){
       <div class="product-category">${CAT_LABELS[p.category]||p.category}</div>
       <div class="product-name">${p.name}</div>
       ${showAddBtn ? `
-      <div class="size-pills" id="pills-${p.id}">${pillsHTML}</div>
-      <div class="product-price" id="cardprice-${p.id}" style="margin:6px 0 10px;font-size:1rem;font-weight:700;color:var(--green-dark)">
-        &#8377;${defaultSize.p} <span style="font-size:0.78rem;font-weight:400;color:var(--text-light)">/ ${defaultSize.w}</span>
+      <div class="size-pills" id="pills-${uid}">${pillsHTML}</div>
+      <div class="product-price" id="cardprice-${uid}">
+        <span class="price-amount">&#8377;${defaultSize.p}</span><span class="price-weight"> / ${defaultSize.w}</span>
       </div>
-      <button class="add-btn" onclick="addToCartFromCard(${p.id})" id="addbtn-${p.id}">
+      <button class="add-btn" onclick="addToCartFromCard(${p.id},this)" id="addbtn-${uid}">
         &#128722; Add to Cart
       </button>
-      <div class="incart-ctrl" id="incart-${p.id}">
-        <button onclick="inCartMinus(${p.id})">&#8722;</button>
-        <span class="incart-num" id="incartnum-${p.id}">1</span>
-        <button onclick="inCartPlus(${p.id})">&#43;</button>
+      <div class="incart-ctrl" id="incart-${uid}">
+        <button onclick="inCartMinus(${p.id},this)">&#8722;</button>
+        <span class="incart-num" id="incartnum-${uid}">1</span>
+        <button onclick="inCartPlus(${p.id},this)">&#43;</button>
       </div>` : `
       <div class="product-weight" style="margin:6px 0">&#128230; ${p.weight}</div>
       <div class="product-price" style="font-weight:700;color:var(--green-dark)">&#8377;${p.price}</div>`}
@@ -1449,17 +1571,24 @@ function productCard(p, showAddBtn=true){
 }
 
 function selectSizePill(pid, btn){
-  document.querySelectorAll('#pills-'+pid+' .size-pill').forEach(b=>b.classList.remove('active'));
+  // Scope to THIS card only — fixes duplicate ID bug when featured + products both render
+  const card = btn.closest('.product-card');
+  if(!card) return;
+  card.querySelectorAll('.size-pill').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   const price  = btn.getAttribute('data-price');
   const weight = btn.getAttribute('data-weight');
-  const priceEl = document.getElementById('cardprice-'+pid);
-  if(priceEl) priceEl.innerHTML = '&#8377;'+price+' <span style="font-size:0.78rem;font-weight:400;color:var(--text-light)">/ '+weight+'</span>';
-  // Reset to add-btn if this size not in cart
+  const priceEl = card.querySelector('.product-price');
+  if(priceEl) priceEl.innerHTML = '<span class="price-amount">&#8377;'+price+'</span><span class="price-weight"> / '+weight+'</span>';
+  // Reset qty display for selected size
   const cartKey = pid+'_'+weight;
   const inCartItem = cart.find(c=>(c.cartKey||c.id)===cartKey);
-  if(inCartItem){ showInCartCtrl(pid, inCartItem.qty); }
-  else { showAddBtnCard(pid); }
+  if(inCartItem){
+    showInCartCtrlCard(card, pid, inCartItem.qty);
+  } else {
+    showAddBtnCardEl(card, pid);
+  }
+  updateCartBadge();
 }
 
 function showAddBtnCard(pid){
@@ -1467,6 +1596,15 @@ function showAddBtnCard(pid){
   const inCart = document.getElementById('incart-'+pid);
   if(addBtn) addBtn.style.display='flex';
   if(inCart) inCart.classList.remove('show');
+}
+function showAddBtnCardEl(card, pid){
+  // Card-scoped version (avoids duplicate ID bug)
+  if(card){
+    const addBtn = card.querySelector('.add-btn');
+    const inCart = card.querySelector('.incart-ctrl');
+    if(addBtn) addBtn.style.display='flex';
+    if(inCart) inCart.classList.remove('show');
+  } else { showAddBtnCard(pid); }
 }
 
 function showInCartCtrl(pid, qty){
@@ -1477,18 +1615,43 @@ function showInCartCtrl(pid, qty){
   if(inCart) inCart.classList.add('show');
   if(numEl)  numEl.textContent = qty;
 }
-
-function inCartPlus(pid){
-  const activePill = document.querySelector('#pills-'+pid+' .size-pill.active');
-  if(!activePill) return;
-  const weight  = activePill.getAttribute('data-weight');
-  const cartKey = pid+'_'+weight;
-  const item    = cart.find(c=>(c.cartKey||c.id)===cartKey);
-  if(item){ item.qty++; saveCart(); document.getElementById('incartnum-'+pid).textContent=item.qty; }
+function showInCartCtrlCard(card, pid, qty){
+  // Card-scoped version
+  if(card){
+    const addBtn = card.querySelector('.add-btn');
+    const inCart = card.querySelector('.incart-ctrl');
+    const numEl  = card.querySelector('.incart-num');
+    if(addBtn) addBtn.style.display='none';
+    if(inCart) inCart.classList.add('show');
+    if(numEl)  numEl.textContent = qty;
+  } else { showInCartCtrl(pid, qty); }
 }
 
-function inCartMinus(pid){
-  const activePill = document.querySelector('#pills-'+pid+' .size-pill.active');
+function inCartPlus(pid, btn){
+  const card = btn ? btn.closest('.product-card') : null;
+  const activePill = card
+    ? card.querySelector('.size-pill.active')
+    : document.querySelector('#pills-'+pid+' .size-pill.active');
+  if(!activePill) return;
+  const weight  = activePill.getAttribute('data-weight');
+  const price   = parseInt(activePill.getAttribute('data-price'));
+  const cartKey = pid+'_'+weight;
+  const item    = cart.find(c=>(c.cartKey||c.id)===cartKey);
+  if(item){
+    item.qty++;
+    item.price = price;
+    saveCart();
+    const numEl = card ? card.querySelector('.incart-num') : document.getElementById('incartnum-'+pid);
+    if(numEl) numEl.textContent = item.qty;
+    updateCartBadge();
+  }
+}
+
+function inCartMinus(pid, btn){
+  const card = btn ? btn.closest('.product-card') : null;
+  const activePill = card
+    ? card.querySelector('.size-pill.active')
+    : document.querySelector('#pills-'+pid+' .size-pill.active');
   if(!activePill) return;
   const weight  = activePill.getAttribute('data-weight');
   const cartKey = pid+'_'+weight;
@@ -1497,19 +1660,27 @@ function inCartMinus(pid){
   item.qty--;
   if(item.qty<=0){
     cart=cart.filter(c=>(c.cartKey||c.id)!==cartKey);
-    saveCart(); showAddBtnCard(pid); showToast('Item removed');
+    saveCart();
+    showAddBtnCardEl(card, pid);
+    showToast('Item removed');
   } else {
-    saveCart(); document.getElementById('incartnum-'+pid).textContent=item.qty;
+    saveCart();
+    const numEl = card ? card.querySelector('.incart-num') : document.getElementById('incartnum-'+pid);
+    if(numEl) numEl.textContent = item.qty;
+    updateCartBadge();
   }
 }
 
 // Size pill logic replaces updateCardPrice / changeCardQty
 
 
-function addToCartFromCard(pid) {
+function addToCartFromCard(pid, btn) {
   const product = products.find(p=>p.id===pid);
   if(!product) return;
-  const activePill = document.querySelector(`#pills-${pid} .size-pill.active`);
+  const card = btn ? btn.closest('.product-card') : null;
+  const activePill = card
+    ? card.querySelector('.size-pill.active')
+    : document.querySelector(`[data-pid="${pid}"] .size-pill.active`);
   let weight = product.weight, price = product.price;
   if(activePill){
     weight = activePill.getAttribute('data-weight');
@@ -1522,13 +1693,14 @@ function addToCartFromCard(pid) {
   saveCart();
   showToast(`${product.name} (${weight}) added! 🛒`);
   const item = cart.find(c=>(c.cartKey||c.id)===cartKey);
-  showInCartCtrl(pid, item.qty);
+  showInCartCtrlCard(card, pid, item.qty);
+  updateCartBadge();
 }
 
 // ===================== FEATURED =====================
 function renderFeatured(){
   const featured = products.filter(p=>p.featured).slice(0,6);
-  document.getElementById('featured-grid').innerHTML = featured.map(p=>productCard(p)).join('');
+  document.getElementById('featured-grid').innerHTML = featured.map(p=>productCard(p, true, 'f')).join('');
   observeFade();
 }
 
@@ -2028,18 +2200,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   updateCartBadge();
   observeFade();
-  // Auto-activate correct page based on filename
   (function(){
     const fn=location.pathname.split('/').pop()||'index.html';
     const m={'index.html':'home','products.html':'products','cart.html':'cart',
              'about.html':'about','contact.html':'contact','admin.html':'admin'};
     const pg=m[fn]||'home';
-    // Direct internal activation (no redirect loop)
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById('admin-dashboard').style.display='none';
-    const pageMap={home:'home-page',products:'products-page',cart:'cart-page',
+    const PM={home:'home-page',products:'products-page',cart:'cart-page',
       about:'about-page',contact:'contact-page',admin:'admin-login'};
-    const el=document.getElementById(pageMap[pg]);
+    const el=document.getElementById(PM[pg]);
     if(el) el.classList.add('active');
     document.querySelectorAll('.nav-link:not(.nav-cart-btn)').forEach((l,i)=>{
       l.classList.toggle('active',i==={home:0,products:1,about:2,contact:3}[pg]);
